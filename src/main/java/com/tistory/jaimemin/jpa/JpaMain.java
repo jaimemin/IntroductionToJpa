@@ -17,23 +17,12 @@ public class JpaMain {
         transaction.begin();
 
         try {
-            // insert
-            // entityManager.persist(getDefaultMember());
+            Member member = new Member();
+            member.setId(1L);
+            member.setUsername("A");
+            member.setRoleType(RoleType.USER);
 
-            // find
-            // Member member = entityManager.find(Member.class, 1L);
-            List<Member> members = entityManager.createQuery("select m from Member as m", Member.class)
-                    .getResultList();
-
-            for (Member member : members) {
-                System.out.println("member.getName() = " + member.getName());
-            }
-
-            // delete
-            // entityManager.remove(member);
-
-            // update
-            // member.setName("HelloJPA");
+            entityManager.persist(member);
 
             transaction.commit();
         } catch (Exception e) {
@@ -45,11 +34,4 @@ public class JpaMain {
         entityManagerFactory.close();
     }
 
-    public static Member getDefaultMember() {
-        Member member = new Member();
-        member.setId(2L);
-        member.setName("HelloB");
-
-        return member;
-    }
 }
