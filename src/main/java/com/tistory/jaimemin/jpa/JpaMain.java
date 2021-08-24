@@ -17,10 +17,14 @@ public class JpaMain {
         transaction.begin();
 
         try {
+            Team team = new Team();
+            team.setName("TeamA");
+
+            entityManager.persist(team);
+
             Member member = new Member();
-            member.setId(1L);
-            member.setUsername("A");
-            member.setRoleType(RoleType.USER);
+            member.setUsername("member1");
+            member.setTeamId(team.getId());
 
             entityManager.persist(member);
 
