@@ -28,6 +28,10 @@ public class JpaMain {
 
             entityManager.persist(member);
 
+            Member foundMember = entityManager.find(Member.class, member.getId());
+
+            Team foundTeam = entityManager.find(Team.class, team.getId());
+
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
