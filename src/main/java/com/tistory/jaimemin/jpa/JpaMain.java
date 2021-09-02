@@ -19,13 +19,13 @@ public class JpaMain {
         try {
             Member member = new Member();
             member.setUsername("member1");
-
             entityManager.persist(member);
 
             Team team = new Team();
             team.setName("teamA");
+            
+            // 외래키가 member 객체 쪽에 있으므로 update문이 진행됨
             team.getMembers().add(member);
-
             entityManager.persist(team);
 
             transaction.commit();
