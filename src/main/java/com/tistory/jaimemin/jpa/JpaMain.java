@@ -28,24 +28,63 @@ public class JpaMain {
             entityManager.flush();
             entityManager.clear();
 
-            // Join을 통해 조회
             /**
+             * Item.class로 찾을 경우 UNION ALL로 다 찾아서 성능이 느림
              *    select
-             *         movie0_.id as id1_2_0_,
-             *         movie0_1_.name as name2_2_0_,
-             *         movie0_1_.price as price3_2_0_,
-             *         movie0_.actor as actor1_6_0_,
-             *         movie0_.director as director2_6_0_
+             *         item0_.id as id1_2_0_,
+             *         item0_.name as name2_2_0_,
+             *         item0_.price as price3_2_0_,
+             *         item0_.actor as actor1_6_0_,
+             *         item0_.director as director2_6_0_,
+             *         item0_.artist as artist1_0_0_,
+             *         item0_.author as author1_1_0_,
+             *         item0_.isbn as isbn2_1_0_,
+             *         item0_.clazz_ as clazz_0_
              *     from
-             *         Movie movie0_
-             *     inner join
-             *         Item movie0_1_
-             *             on movie0_.id=movie0_1_.id
+             *         ( select
+             *             id,
+             *             name,
+             *             price,
+             *             actor,
+             *             director,
+             *             null as artist,
+             *             null as author,
+             *             null as isbn,
+             *             1 as clazz_
+             *         from
+             *             Movie
+             *         union
+             *         all select
+             *             id,
+             *             name,
+             *             price,
+             *             null as actor,
+             *             null as director,
+             *             artist,
+             *             null as author,
+             *             null as isbn,
+             *             2 as clazz_
+             *         from
+             *             Album
+             *         union
+             *         all select
+             *             id,
+             *             name,
+             *             price,
+             *             null as actor,
+             *             null as director,
+             *             null as artist,
+             *             author,
+             *             isbn,
+             *             3 as clazz_
+             *         from
+             *             Book
+             *     ) item0_
              *     where
-             *         movie0_.id=?
+             *        item0_.id=?
              */
-            Movie foundMovie = entityManager.find(Movie.class, movie.getId());
-            System.out.println("foundMovie = " + foundMovie);
+            Item item = entityManager.find(Item.class, movie.getId());
+            System.out.println("item = " + item);
 
             transaction.commit();
         } catch (Exception e) {

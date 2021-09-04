@@ -3,24 +3,14 @@ package com.tistory.jaimemin.jpa;
 import javax.persistence.*;
 
 /**
- * 단일 테이블 전략
- *     create table Item (
- *        DTYPE varchar(31) not null,
- *         id bigint not null,
- *         name varchar(255),
- *         price integer not null,
- *         actor varchar(255),
- *         director varchar(255),
- *         artist varchar(255),
- *         author varchar(255),
- *         isbn varchar(255),
- *         primary key (id)
- *     )
+ * 구현 클래스마다 테이블 전략
+ * ITEM 테이블은 생성되지 않음
+ * ALBUM, BOOK, MOVIE 테이블만 생성됨
  */
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn // 단일 테이블 전략의 경우 해당 어노테이션 없어도 생성됨
-public class Item {
+public abstract class Item {
 
     @Id
     @GeneratedValue
