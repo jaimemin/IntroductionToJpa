@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn // DTYPE이 생기고 Entity명이 들어감
 public class Item {
 
     @Id

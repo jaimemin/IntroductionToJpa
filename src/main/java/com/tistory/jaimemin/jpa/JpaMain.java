@@ -37,7 +37,7 @@ public class JpaMain {
              *         movie0_.actor as actor1_6_0_,
              *         movie0_.director as director2_6_0_
              *     from
-             *         Movie movie0_ 
+             *         Movie movie0_
              *     inner join
              *         Item movie0_1_
              *             on movie0_.id=movie0_1_.id
