@@ -15,8 +15,9 @@ public class Member {
     @Column(name = "USERNAME")
     private String username;
 
+    // 일대다 양방향으로 억지로 사용하는 방법
     @ManyToOne
-    @JoinColumn(insertable = false, updatable = false)
+    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
     private Team team;
 
     @OneToOne
