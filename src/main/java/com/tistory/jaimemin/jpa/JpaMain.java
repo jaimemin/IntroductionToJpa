@@ -44,10 +44,14 @@ public class JpaMain {
              *         values
              *             (?, ?, ?)
              */
+            // 부모엔티티를 통해서 자식의 생명주기 관리
             entityManager.persist(parent);
-            // CASCADE 없이 적용해야할 때
-//            entityManager.persist(child);
-//            entityManager.persist(child2);
+
+            entityManager.flush();
+            entityManager.clear();
+
+            Parent foundParent = entityManager.find(Parent.class, parent.getId());
+            foundParent.getChilds().remove(0); // OrphanRemoval
 
             transaction.commit();
         } catch (Exception e) {
