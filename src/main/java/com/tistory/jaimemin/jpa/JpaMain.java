@@ -28,13 +28,28 @@ public class JpaMain {
             entityManager.flush();
             entityManager.clear();
 
+            // EAGER이므로 한번에 다 가져옴
+            /**
+             * select
+             *  member0_.MEMBER_ID as member_i1_3_0_,
+             *  member0_.createdAt as createda2_3_0_,
+             *  member0_.createdBy as createdb3_3_0_,
+             *  member0_.lastModifiedAt as lastmodi4_3_0_,
+             *  member0_.lastModifiedBy as lastmodi5_3_0_,
+             *  member0_.team_TEAM_ID as team_tea7_3_0_,
+             *  member0_.USERNAME as username6_3_0_,
+             *  team1_.TEAM_ID as team_id1_7_1_,
+             *  team1_.createdAt as createda2_7_1_,
+             *  team1_.createdBy as createdb3_7_1_,
+             *  team1_.lastModifiedAt as lastmodi4_7_1_,
+             *  team1_.lastModifiedBy as lastmodi5_7_1_,
+             *  team1_.name as name6_7_1_
+             * from Member member0_
+             * left outer join Team team1_
+             * on member0_.team_TEAM_ID=team1_.TEAM_ID where member0_.MEMBER_ID=?
+             */
+            // Member에 엮여있는 클래스가 많을수록 불필요한 JOIN문이 많이 나가서 성능이 안 나옴
             Member m = entityManager.find(Member.class, member.getId());
-            // Lazy이므로 proxy 형태로 나옴
-            System.out.println("m = " + m.getTeam().getClass());
-
-            System.out.println("================");
-            m.getTeam().getName(); // 프록시 초기화
-            System.out.println("================");
 
             transaction.commit();
         } catch (Exception e) {

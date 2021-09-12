@@ -16,8 +16,8 @@ public class Member extends BaseEntity {
     @Column(name = "USERNAME")
     private String username;
 
-    // Team 클래스는 필요할 때 지연로딩
-    @ManyToOne(fetch = FetchType.LAZY)
+    // 즉시로딩
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private Team team;
 
