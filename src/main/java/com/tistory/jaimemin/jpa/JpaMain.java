@@ -17,10 +17,26 @@ public class JpaMain {
         transaction.begin();
 
         try {
-            // 쿼리가 나갈 때 멤버랑 팀 전부를 가져와야할까?
-            Member member = entityManager.find(Member.class, 1L);
-            printMember(member);
-            // printMemberAndTeam(member);
+            Member member = new Member();
+            member.setUsername("hello");
+            entityManager.persist(member);
+
+            entityManager.flush();
+            entityManager.clear();
+
+            // find 호출하는 시점에서 DB가 쿼리를 날림
+            // Member foundMember = entityManager.find(Member.class, member.getId());
+            
+            // getReference 호출하는 시점에는 DB가 쿼리를 날리지 않음
+            Member foundMember = entityManager.getReference(Member.class, member.getId());
+            
+            // 값이 실제 사용되는 시점에는 쿼리가 날라감
+            // 프록시 객체가 실제 엔티티로 바뀌는 것이 아니라 실제 엔티티에 접근이 가능한 것임
+            // 따라서, class명 같음
+            System.out.println("foundMember before getClass() = " + foundMember.getClass());
+            System.out.println("foundMember id = " + foundMember.getId());
+            System.out.println("foundMember username = " + foundMember.getUsername());
+            System.out.println("foundMember after getClass() = " + foundMember.getClass());
 
             transaction.commit();
         } catch (Exception e) {
@@ -30,18 +46,6 @@ public class JpaMain {
         }
 
         entityManagerFactory.close();
-    }
-
-    private static void printMember(Member member) {
-        System.out.println("member = " + member.getUsername());
-    }
-
-    private static void printMemberAndTeam(Member member) {
-        String username = member.getUsername();
-        System.out.println("username = " + username);
-
-        Team team = member.getTeam();
-        System.out.println("team = " + team);
     }
 
 }
