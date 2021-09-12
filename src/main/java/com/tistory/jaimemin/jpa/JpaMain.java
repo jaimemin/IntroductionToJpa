@@ -1,9 +1,8 @@
 package com.tistory.jaimemin.jpa;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 public class JpaMain {
@@ -28,19 +27,18 @@ public class JpaMain {
             Member reference = entityManager.getReference(Member.class, member.getId());
             System.out.println("foundMember.getClass() = " + reference.getClass());
 
-            entityManager.detach(reference); // 영속성 컨텍스트에서 꺼내버린다면?
-            // entityManager.close(); // 만약 영속성 컨텍스트를 꺼버리거나
+            // false
+            System.out.println("isLoaded = " + entityManagerFactory
+                    .getPersistenceUnitUtil()
+                    .isLoaded(reference));
 
-            /**
-             * org.hibernate.LazyInitializationException: could not initialize proxy [com.tistory.jaimemin.jpa.Member#1] - no Session
-             * 	at org.hibernate.proxy.AbstractLazyInitializer.initialize(AbstractLazyInitializer.java:170)
-             * 	at org.hibernate.proxy.AbstractLazyInitializer.getImplementation(AbstractLazyInitializer.java:310)
-             * 	at org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor.intercept(ByteBuddyInterceptor.java:45)
-             * 	at org.hibernate.proxy.ProxyConfiguration$InterceptorDispatcher.intercept(ProxyConfiguration.java:95)
-             * 	at com.tistory.jaimemin.jpa.Member$HibernateProxy$I2QRjDEY.getUsername(Unknown Source)
-             * 	at com.tistory.jaimemin.jpa.JpaMain.main(JpaMain.java:34)
-             */
-            reference.getUsername(); // 프록시 초기화 시도
+            // reference.getUsername(); // 프록시 초기화
+            Hibernate.initialize(reference); // 강제 초기화 (JPA 표준에는 강제 초기화가 없음)
+            
+            // true
+            System.out.println("isLoaded = " + entityManagerFactory
+                    .getPersistenceUnitUtil()
+                    .isLoaded(reference));
 
             transaction.commit();
         } catch (Exception e) {
