@@ -16,29 +16,25 @@ public class JpaMain {
         transaction.begin();
 
         try {
+            Team team = new Team();
+            team.setName("teamA");
+            entityManager.persist(team);
+
             Member member = new Member();
             member.setUsername("hello");
+            member.setTeam(team);
             entityManager.persist(member);
 
             entityManager.flush();
             entityManager.clear();
 
-            // 프록시
-            Member reference = entityManager.getReference(Member.class, member.getId());
-            System.out.println("foundMember.getClass() = " + reference.getClass());
+            Member m = entityManager.find(Member.class, member.getId());
+            // Lazy이므로 proxy 형태로 나옴
+            System.out.println("m = " + m.getTeam().getClass());
 
-            // false
-            System.out.println("isLoaded = " + entityManagerFactory
-                    .getPersistenceUnitUtil()
-                    .isLoaded(reference));
-
-            // reference.getUsername(); // 프록시 초기화
-            Hibernate.initialize(reference); // 강제 초기화 (JPA 표준에는 강제 초기화가 없음)
-            
-            // true
-            System.out.println("isLoaded = " + entityManagerFactory
-                    .getPersistenceUnitUtil()
-                    .isLoaded(reference));
+            System.out.println("================");
+            m.getTeam().getName(); // 프록시 초기화
+            System.out.println("================");
 
             transaction.commit();
         } catch (Exception e) {

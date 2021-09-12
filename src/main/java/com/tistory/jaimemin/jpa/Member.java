@@ -16,9 +16,9 @@ public class Member extends BaseEntity {
     @Column(name = "USERNAME")
     private String username;
 
-    // 일대다 양방향으로 억지로 사용하는 방법
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
+    // Team 클래스는 필요할 때 지연로딩
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
     private Team team;
 
     public Long getId() {
