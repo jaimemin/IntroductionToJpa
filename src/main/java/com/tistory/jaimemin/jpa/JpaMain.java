@@ -23,17 +23,21 @@ public class JpaMain {
 
             entityManager.flush();
             entityManager.clear();
-                
-            Member foundMember = entityManager.find(Member.class, member.getId());
-            System.out.println("foundMember.getClass() = " + foundMember.getClass());
-            
-            // 현재 영속성 컨텍스트에 foundMember가 올라와있는 상태
-            
+
+            // 프록시
             Member reference = entityManager.getReference(Member.class, member.getId());
-            System.out.println("reference.getClass() = " + reference.getClass());
+            System.out.println("foundMember.getClass() = " + reference.getClass());
+
+            // 멤버가 나와야하는거 아닌가?
+            // 조회는 하지만 결국 foundMember도 proxy가 반환이 됨
+            Member foundMember = entityManager.getReference(Member.class, member.getId());
+            System.out.println("reference.getClass() = " + foundMember.getClass());
             
-            // JPA에서는 같은 트랜잭션 내 즉, 같은 영속성 컨텍스트 내에서는 ==는 동일
-            System.out.println("a == a: " + (member == reference));
+            // ==이 성립할까?
+            // JPA는 이걸 무조건 참이라고 보장해줘야함 (true)
+            // 결론: 프록시로 먼저 조회하면 그 이후 find에 대해서도 프록시를 반환함
+            // 핵심은 개발을 진행할 때 반환되는 객체가 프록시든 엔티티든 상관없도록 개발하는 것이 중요 (핵심)
+            System.out.println("a == a: " + (foundMember == reference));
 
             transaction.commit();
         } catch (Exception e) {
