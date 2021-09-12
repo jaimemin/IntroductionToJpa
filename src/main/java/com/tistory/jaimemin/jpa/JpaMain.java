@@ -21,22 +21,28 @@ public class JpaMain {
             member.setUsername("hello");
             entityManager.persist(member);
 
+            Member member2 = new Member();
+            member.setUsername("hello2");
+            entityManager.persist(member2);
+
             entityManager.flush();
             entityManager.clear();
 
-            // find 호출하는 시점에서 DB가 쿼리를 날림
-            // Member foundMember = entityManager.find(Member.class, member.getId());
-            
-            // getReference 호출하는 시점에는 DB가 쿼리를 날리지 않음
-            Member foundMember = entityManager.getReference(Member.class, member.getId());
-            
-            // 값이 실제 사용되는 시점에는 쿼리가 날라감
-            // 프록시 객체가 실제 엔티티로 바뀌는 것이 아니라 실제 엔티티에 접근이 가능한 것임
-            // 따라서, class명 같음
-            System.out.println("foundMember before getClass() = " + foundMember.getClass());
-            System.out.println("foundMember id = " + foundMember.getId());
-            System.out.println("foundMember username = " + foundMember.getUsername());
-            System.out.println("foundMember after getClass() = " + foundMember.getClass());
+//            Member foundMember = entityManager.find(Member.class, member.getId());
+//            Member foundMember2 = entityManager.find(Member.class, member2.getId());
+//
+//            // true
+//            System.out.println("member == member2" + (member.getClass() == member2.getClass()));
+
+            Member foundMember = entityManager.find(Member.class, member.getId());
+            Member foundMember2 = entityManager.getReference(Member.class, member2.getId());
+
+            // false (프록시가 넘어오는 경우 있으므로 == 사용하지 말기)
+            System.out.println("member == member2" + (member.getClass() == member2.getClass()));
+
+            // true (상속관계이므로)
+            System.out.println("member == member2: " + (member instanceof Member));
+            System.out.println("member == member2: " + (member2 instanceof Member));
 
             transaction.commit();
         } catch (Exception e) {
