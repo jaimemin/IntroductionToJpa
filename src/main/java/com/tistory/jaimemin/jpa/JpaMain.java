@@ -17,12 +17,10 @@ public class JpaMain {
         transaction.begin();
 
         try {
-            Member member = new Member();
-            member.setUsername("user1");
-            member.setCreatedBy("gudetama");
-            member.setCreatedAt(LocalDateTime.now());
-
-            entityManager.persist(member);
+            // 쿼리가 나갈 때 멤버랑 팀 전부를 가져와야할까?
+            Member member = entityManager.find(Member.class, 1L);
+            printMember(member);
+            // printMemberAndTeam(member);
 
             transaction.commit();
         } catch (Exception e) {
@@ -32,6 +30,18 @@ public class JpaMain {
         }
 
         entityManagerFactory.close();
+    }
+
+    private static void printMember(Member member) {
+        System.out.println("member = " + member.getUsername());
+    }
+
+    private static void printMemberAndTeam(Member member) {
+        String username = member.getUsername();
+        System.out.println("username = " + username);
+
+        Team team = member.getTeam();
+        System.out.println("team = " + team);
     }
 
 }
