@@ -25,14 +25,16 @@ public class JpaMain {
                     , "street"
                     , "100000"));
 
+            // 간단할 때만 값 타입 컬렉션
+            // 그 외에는 엔티티로 (주소 이력 같은 경우)
             sampleMember.getFavoriteFoods().add("치킨");
             sampleMember.getFavoriteFoods().add("피자");
             sampleMember.getFavoriteFoods().add("족발");
 
-            sampleMember.getAddressHistory().add(new Address("old1"
+            sampleMember.getAddressHistory().add(new AddressEntity("old1"
                     , "street"
                     , "100000"));
-            sampleMember.getAddressHistory().add(new Address("old2"
+            sampleMember.getAddressHistory().add(new AddressEntity("old2"
                     , "street"
                     , "100000"));
 
@@ -59,10 +61,10 @@ public class JpaMain {
              */
             SampleMember foundSampleMember
                     = entityManager.find(SampleMember.class, sampleMember.getId());
-            List<Address> addressHistory = foundSampleMember.getAddressHistory();
+            List<AddressEntity> addressHistory = foundSampleMember.getAddressHistory();
 
-            for (Address address : addressHistory) {
-                System.out.println("address = " + address.getCity());
+            for (AddressEntity addressEntity : addressHistory) {
+                System.out.println("address = " + addressEntity.getAddress().getCity());
             }
             
             Set<String> favoriteFoods = foundSampleMember.getFavoriteFoods();
@@ -86,17 +88,12 @@ public class JpaMain {
             foundSampleMember.getFavoriteFoods().remove("치킨");
             foundSampleMember.getFavoriteFoods().add("한식");
 
-            // equals랑 hash가 중요해지는 시점
-            // addressHistory를 다 지우고
-            // 값 타입 컬렉션에 있는 현재 값을 모두 다시 저장
-            // 결론: 이렇게 쓰면 안된다 (실행속도 저하)
-            // -> 값 타입 컬렉션을 매핑하는 테이블은 모든 컬럼을 묶어서 기본키를 구성해야함
-            foundSampleMember.getAddressHistory().remove(new Address("old1"
-                    , "street"
-                    , "100000"));
-            foundSampleMember.getAddressHistory().add(new Address("newCity1"
-                    , "street"
-                    , "100000"));
+            // 앞선 문제의 대안
+            // Row update: update ADDRESS set  where id=? 
+            // 일대다에서 update일 수 밖에 없음
+            // 자체적인 엔티티가 생겨 마음껏 수정할 수 있음
+            AddressEntity foundAddressEntity = foundSampleMember.getAddressHistory().get(0);
+            foundSampleMember.getAddressHistory().remove(foundAddressEntity);
 
             transaction.commit();
         } catch (Exception e) {
