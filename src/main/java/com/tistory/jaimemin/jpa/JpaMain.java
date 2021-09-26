@@ -17,41 +17,7 @@ public class JpaMain {
         transaction.begin();
 
         try {
-            Child child = new Child();
-            Child child2 = new Child();
 
-            Parent parent = new Parent();
-            parent.addChild(child);
-            parent.addChild(child2);
-
-            /**
-             * insert
-             *         into
-             *             Parent
-             *             (name, PARENT_ID)
-             *         values
-             *             (?, ?)
-             * insert
-             *         into
-             *             Child
-             *             (name, PARENT_ID, id)
-             *         values
-             *             (?, ?, ?)
-             * insert
-             *         into
-             *             Child
-             *             (name, PARENT_ID, id)
-             *         values
-             *             (?, ?, ?)
-             */
-            // 부모엔티티를 통해서 자식의 생명주기 관리
-            entityManager.persist(parent);
-
-            entityManager.flush();
-            entityManager.clear();
-
-            Parent foundParent = entityManager.find(Parent.class, parent.getId());
-            foundParent.getChilds().remove(0); // OrphanRemoval
 
             transaction.commit();
         } catch (Exception e) {
