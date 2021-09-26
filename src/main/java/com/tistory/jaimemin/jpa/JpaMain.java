@@ -17,7 +17,14 @@ public class JpaMain {
         transaction.begin();
 
         try {
-
+            SampleMember sampleMember = new SampleMember();
+            sampleMember.setUsername("hello");
+            sampleMember.setHomeAddress(new Address("city"
+                    , "street"
+                    , "100000"));
+            sampleMember.setWorkPeriod(new Period(LocalDateTime.now()
+                    , LocalDateTime.now()));
+            entityManager.persist(sampleMember);
 
             transaction.commit();
         } catch (Exception e) {

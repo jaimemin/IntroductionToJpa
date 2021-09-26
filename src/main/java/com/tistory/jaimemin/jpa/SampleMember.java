@@ -1,9 +1,6 @@
 package com.tistory.jaimemin.jpa;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -29,13 +26,41 @@ public class SampleMember {
     @Column(name = "USERNAME")
     private String username;
 
-    private LocalDateTime startDate;
+    @Embedded
+    private Period workPeriod;
 
-    private LocalDateTime endDate;
+    @Embedded
+    private Address homeAddress;
 
-    private String city;
+    public Long getId() {
+        return id;
+    }
 
-    private String street;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    private String zipCode;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Period getWorkPeriod() {
+        return workPeriod;
+    }
+
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
+    }
+
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
+    }
 }
