@@ -21,22 +21,7 @@ public class JpaMain {
         transaction.begin();
 
         try {
-            // Criteria 사용 준비
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Member> query = criteriaBuilder.createQuery(Member.class);
-
-            Root<Member> member = query.from(Member.class);
-            CriteriaQuery<Member> criteriaQuery = query.select(member);
-
-            String username = "kim";
-
-            // 장점: 컴파일 시점에 에러 잡아줌
-            // 단점: sql 스럽지 않음
-            if (username != null) {
-                criteriaQuery = criteriaQuery.where(criteriaBuilder.equal(member.get("username"), "kim"));
-            }
-
-            List<Member> members = entityManager.createQuery(criteriaQuery)
+            entityManager.createNativeQuery("SELECT MEMBER_ID, USERNAME FROM MEMBER")
                             .getResultList();
 
             transaction.commit();
